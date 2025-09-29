@@ -1,0 +1,51 @@
+Metadata-Version: 2.4
+Name: rubxy
+Version: 0.1.0
+Summary: A Python library for interacting with the Rubika bot API.
+Author: Amirali Rahimi
+Author-email: amiralirahimi769@gmail.com
+License: GPL-3.0-or-later
+Keywords: rubika,rubxy,bot,robot
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: aiohttp
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# rubxy
+
+**rubxy** is a Python library for interacting with the **Rubika** bot API.  
+It makes it easy to send and receive messages, handle events, and build bots quickly.
+
+---
+
+## Features
+
+- Send and receive messages via Rubika API
+- Easy-to-use event handlers
+- Fully asynchronous
+
+---
+
+## Installation
+
+```bash
+pip install rubxy

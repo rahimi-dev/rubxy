@@ -1,0 +1,25 @@
+import rubxy
+
+from rubxy import types, utils
+from typing import Union, Optional
+
+class EditMessageText:
+    async def edit_message_text(
+        self: "rubxy.Client",
+        text: str,
+        chat_id: Union[str, int],
+        message_id: Union[str, int],
+    ) -> "types.Message":
+        r = await self.invoke(
+            "editMessageText",
+            text=text,
+            chat_id=chat_id,
+            message_id=message_id,
+        )
+
+        return types.Message(
+            text=text,
+            chat_id=chat_id,
+            id=message_id,
+            client=self
+        )
