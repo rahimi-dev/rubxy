@@ -4,7 +4,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-client = Client(bot_token="")
+client = Client(bot_token="DBDHE0WYUPOBBNWEENWGZUHPEXXIPDFJIWNMQKNYUCVXHFVOIODELKQZFCHLOBTQ")
 
 @client.on_start()
 def s(client):
@@ -14,20 +14,20 @@ def s(client):
 def t(client):
     print('stop handler')
 
-@client.on_message(filters.commands("start"))
+@client.on_message(filters.commands("start") | filters.commands("stop"))
 async def m(_, update: Update):
-    await update.delete()
-    m = await update.reply("Hello", inline_keypad=Keypad(
-        [
-            [
-                Button("salam", button_text="Hi", button_calendar="rr")
-            ]
-        ]
-    ))
+    m = await update.reply("Hello",
+                           inline_keypad=Keypad(
+                               [
+                                   [
+                                       Button(id="test", button_text="Test")
+                                   ]
+                               ]
+                           ))
 
 
-@client.on_inline_message(filters.regex("^salam$"))
+@client.on_inline_message(filters.regex("^s$") | filters.regex("^test$"))
 async def m2(_, update):
     print(update)
 
-client.run()
+client.run("https://ricky-piece-whenever-stakeholders.trycloudflare.com", update_endpoints=False)

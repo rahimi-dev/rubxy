@@ -9,7 +9,7 @@ from typing import Optional
 class OnInlineMessage:
     def on_inline_message(
         self: "rubxy.Client",
-        *filters: Optional[Filter],
+        filters: Optional[Filter] = None,
         group: int = 0
     ):
         if self.is_long_polling:
@@ -23,7 +23,7 @@ class OnInlineMessage:
                 raise TypeError("The passed function must be asynchronous.")
             
             self.add_handler(
-                handlers.InlineMessageHandler(func, *filters),
+                handlers.InlineMessageHandler(func, filters),
                 group=group
             )
             

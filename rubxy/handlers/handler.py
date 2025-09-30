@@ -28,17 +28,18 @@ class Handler:
             return True
 
         # All filters must be true
-        for f in self.filters:
-            try:
-                if inspect.iscoroutinefunction(f.__call__):
-                    ok = await f(client, update)
-                else:
-                    ok = f(client, update)
-            except Exception:
-                ok = False
+        f = self.filters
+        
+        try:
+            if inspect.iscoroutinefunction(f.__call__):
+                ok = await f(client, update)
+            else:
+                ok = f(client, update)
+        except Exception:
+            ok = False
 
-            if not ok:
-                return
+        if not ok:
+            return
         
         await self._call_callback(client, update)
         

@@ -8,7 +8,7 @@ from typing import Optional
 class OnMessage:
     def on_message(
         self: "rubxy.Client",
-        *filters: Optional[Filter],
+        filters: Optional[Filter] = None,
         group: int = 0
     ):
         def decorator(func):
@@ -16,7 +16,7 @@ class OnMessage:
                 raise TypeError("The passed function must be asynchronous.")
             
             self.add_handler(
-                handlers.MessageHandler(func, *filters),
+                handlers.MessageHandler(func, filters),
                 group=group
             )
             

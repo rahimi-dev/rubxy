@@ -10,7 +10,7 @@ class MessageHandler(Handler):
     def __init__(
         self,
         callback: Callable,
-        *filters: Optional[Filter],
+        filters: Optional[Filter] = None,
     ):
         super().__init__(
             callback=callback,
