@@ -6,8 +6,8 @@ from typing import Union, Optional
 class EditMessageText:
     async def edit_message_text(
         self: "rubxy.Client",
-        text: str,
         chat_id: Union[str, int],
+        text: str,
         message_id: Union[str, int],
     ) -> "types.Message":
         r = await self.invoke(

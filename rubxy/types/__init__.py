@@ -16,6 +16,9 @@ from .button_number_picker import  ButtonNumberPicker
 from .button_location import ButtonLocation
 from .button_textbox import ButtonTextbox
 from .button_string_picker import ButtonStringPicker
+from .button_link import ButtonLink
+from .open_chat_data import OpenChatData
+from .join_channel_data import JoinChannelData
 from .button import Button
 from .location import Location
 from .poll_status import PollStatus

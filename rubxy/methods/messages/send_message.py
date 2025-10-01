@@ -7,8 +7,8 @@ from typing import Optional, Union
 class SendMessage:
     async def send_message(
         self: "rubxy.Client",
-        text: str,
         chat_id: Union[str, int],
+        text: str,
         disable_notification: Optional[bool] = False,
         chat_keypad: Optional["types.Keypad"] = None,
         inline_keypad: Optional["types.Keypad"] = None,

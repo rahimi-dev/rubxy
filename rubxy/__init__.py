@@ -19,3 +19,4 @@ class ContinuePropagation(StopAsyncIteration):
 
 
 from .client import Client
+from . import sync

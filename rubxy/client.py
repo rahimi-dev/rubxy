@@ -115,7 +115,21 @@ class Client(Methods):
                         handler,
                         self
                     )
+
+    def __enter__(self):
+        self.start()
+        return self
     
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.stop()
+
+    async def __aenter__(self):
+        await self.start()
+        return self
+    
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        await self.stop()
+
     async def _rate_limit(self):
         passed = time.time() - self.last_request
 

@@ -1,5 +1,3 @@
-from rubpy import Client
+from rubxy import Client
 
-client = Client()
-
-client.send_document
+client = Client("DBDHE0WYUPOBBNWEENWGZUHPEXXIPDFJIWNMQKNYUCVXHFVOIODELKQZFCHLOBTQ")

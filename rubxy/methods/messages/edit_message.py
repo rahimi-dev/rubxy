@@ -6,8 +6,8 @@ from typing import Optional, Union
 class EditMessage:
     async def edit_message(
         self: "rubxy.Client",
-        text: str,
         chat_id: Union[str, int],
+        text: str,
         message_id: Union[str, int],
         chat_keypad: Optional["types.Keypad"] = None,
         inline_keypad: Optional["types.Keypad"] = None,
