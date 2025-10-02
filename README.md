@@ -42,7 +42,7 @@ pip install rubxy
     client.run(endpoint="https://example.com")
     ```
 
-    - Inline Updates
+- Inline Updates
 
     ```python
     from rubxy import Client, filters
