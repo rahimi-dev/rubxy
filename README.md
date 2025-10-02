@@ -24,87 +24,87 @@ pip install rubxy
 ## Async Usage
 
 
-### Messages Updates
-```python
-from rubxy import Client, filters
-from rubxy.types import Update
+- Messages Updates
+    ```python
+    from rubxy import Client, filters
+    from rubxy.types import Update
 
-client = Client(bot_token="BOT_TOKEN")
+    client = Client(bot_token="BOT_TOKEN")
 
-@client.on_message(filters.commands("start"))
-async def start_handler(client: Client, update: Update):
-    await update.reply("Hello from rubxy")
+    @client.on_message(filters.commands("start"))
+    async def start_handler(client: Client, update: Update):
+        await update.reply("Hello from rubxy")
 
-# Run in long-polling mode
-client.run()
+    # Run in long-polling mode
+    client.run()
 
-# Or run in webhook mode (recommended)
-client.run(endpoint="https://example.com")
-```
+    # Or run in webhook mode (recommended)
+    client.run(endpoint="https://example.com")
+    ```
 
-### Inline Updates
+    - Inline Updates
 
-```python
-from rubxy import Client, filters
-from rubxy.types import InlineMessage
+    ```python
+    from rubxy import Client, filters
+    from rubxy.types import InlineMessage
 
-client = Client(bot_token="BOT_TOKEN")
+    client = Client(bot_token="BOT_TOKEN")
 
-@client.on_inline_message(filters.regex("^button-(\w+)"))
-async def inline_message_handler(client: Client, i: InlineMessage):
-    await i.answer(
-        text="you clicked button-id: {}".format(
-            i.matches[0].group(1)
+    @client.on_inline_message(filters.regex("^button-(\w+)"))
+    async def inline_message_handler(client: Client, i: InlineMessage):
+        await i.answer(
+            text="you clicked button-id: {}".format(
+                i.matches[0].group(1)
+            )
         )
-    )
 
-# Run in long-polling mode
-client.run()
+    # Run in long-polling mode
+    client.run()
 
-# Or run in webhook mode (recommended)
-client.run(endpoint="https://example.com")
-```
+    # Or run in webhook mode (recommended)
+    client.run(endpoint="https://example.com")
+    ```
 
 ## Sync Usage
 
 
-### Messages Updates
-```python
-from rubxy import Client, filters
-from rubxy.types import Update
+- Messages Updates
+    ```python
+    from rubxy import Client, filters
+    from rubxy.types import Update
 
-client = Client(bot_token="BOT_TOKEN")
+    client = Client(bot_token="BOT_TOKEN")
 
-@client.on_message(filters.commands("start"))
-def start_handler(client: Client, update: Update):
-    update.reply("Hello from rubxy")
+    @client.on_message(filters.commands("start"))
+    def start_handler(client: Client, update: Update):
+        update.reply("Hello from rubxy")
 
-# Run in long-polling mode
-client.run()
+    # Run in long-polling mode
+    client.run()
 
-# Or run in webhook mode (recommended)
-client.run(endpoint="https://example.com")
-```
+    # Or run in webhook mode (recommended)
+    client.run(endpoint="https://example.com")
+    ```
 
-### Inline Updates
+- Inline Updates
 
-```python
-from rubxy import Client, filters
-from rubxy.types import InlineMessage
+    ```python
+    from rubxy import Client, filters
+    from rubxy.types import InlineMessage
 
-client = Client(bot_token="BOT_TOKEN")
+    client = Client(bot_token="BOT_TOKEN")
 
-@client.on_inline_message(filters.regex("^button-(\w+)"))
-def inline_message_handler(client: Client, i: InlineMessage):
-    i.answer(
-        text="you clicked button-id: {}".format(
-            i.matches[0].group(1)
+    @client.on_inline_message(filters.regex("^button-(\w+)"))
+    def inline_message_handler(client: Client, i: InlineMessage):
+        i.answer(
+            text="you clicked button-id: {}".format(
+                i.matches[0].group(1)
+            )
         )
-    )
 
-# Run in long-polling mode
-client.run()
+    # Run in long-polling mode
+    client.run()
 
-# Or run in webhook mode (recommended)
-client.run(endpoint="https://example.com")
-```
+    # Or run in webhook mode (recommended)
+    client.run(endpoint="https://example.com")
+    ```
