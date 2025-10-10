@@ -1,3 +1,3 @@
-from rubxy import Client
+import pyrogram
 
-client = Client("DBDHE0WYUPOBBNWEENWGZUHPEXXIPDFJIWNMQKNYUCVXHFVOIODELKQZFCHLOBTQ")
+pyrogram.sync

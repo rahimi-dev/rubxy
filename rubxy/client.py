@@ -4,6 +4,7 @@ import asyncio
 import time
 import inspect
 import os
+import sys
 
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from concurrent.futures import ThreadPoolExecutor
@@ -12,6 +13,8 @@ from rubxy.methods import Methods
 from rubxy.handlers import Handler
 from rubxy.dispatcher import Dispatcher
 from typing import Any, Union, Literal, Dict, List, Callable, Optional
+from importlib import import_module
+from pathlib import Path
 
 from . import Plugins
 from ._config import (
@@ -139,10 +142,32 @@ class Client(Methods):
         self.last_request = time.time()
 
     def load_plugins(self):
-        plugins = self.plugins
+        if not self.plugins:
+            return
+        
+        plugins = self.plugins.copy()
+        root = plugins.get("root")
+        include = plugins.get("include", [])
+        exclude = plugins.get("exclude", [])
+        count = 0
 
-        if plugins.root:
-            pass
+        if not root or not isinstance(root, str):
+            raise ValueError("`root` parameter is required for plugins")
+
+        for path in sorted(Path(root.replace('.', '/')).rglob('*.py')):
+            module_path = '.'.join(path.parent.parts + (path.stem,))
+            logger.info("`%s` module loading...", module_path)
+            module = import_module(module_path)
+
+            for name in vars(module).keys():
+                try:
+                    for handler, group in getattr(module, name).handlers:
+                        self.add_handler(handler, group)
+                        count += 1
+                except Exception:
+                    pass
+        
+        logger.info("%s plugins are loaded successfuly", count)
 
     def run(
         self,
@@ -152,6 +177,8 @@ class Client(Methods):
         port: Optional[int] = DEAFULT_PORT,
         update_endpoints: Optional[bool] = True
     ) -> None:
+        self.load_plugins()
+
         runner = self.loop.run_until_complete
         runner(self.start())
 

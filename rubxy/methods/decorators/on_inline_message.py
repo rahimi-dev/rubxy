@@ -1,5 +1,4 @@
 import rubxy
-import inspect
 import warnings
 
 from rubxy import handlers
@@ -19,9 +18,6 @@ class OnInlineMessage:
             )
 
         def decorator(func):
-            if not inspect.iscoroutinefunction(func):
-                raise TypeError("The passed function must be asynchronous.")
-            
             self.add_handler(
                 handlers.InlineMessageHandler(func, filters),
                 group=group

@@ -1,5 +1,4 @@
 import rubxy
-import inspect
 
 from rubxy import handlers
 
