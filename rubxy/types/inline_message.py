@@ -3,9 +3,10 @@ import rubxy
 from rubxy import types
 from typing import Optional
 
+from .update import Update
 from .object import Object
 
-class InlineMessage(Object):
+class InlineMessage(Update, Object):
     def __init__(
         self,
         *,
