@@ -29,7 +29,7 @@ class Update(Object):
         self.matches = matches
 
     async def reply(
-        self: Union["types.Update", "types.Message"],
+        self: Union["types.Message", "types.InlineMessage"],
         text: str,
         qoute: Optional[bool] = None,
         chat_id: Optional[str] = None,
@@ -41,6 +41,9 @@ class Update(Object):
     ):
         if qoute is None:
             qoute = not self.chat_id.startswith(('u', 'b')) # true if message in group
+        
+        if qoute and reply_to_message_id is None:
+            reply_to_message_id = self.message_id or self.new_message.id or self.updated_message.id
 
         return await self._client.send_message(
             text=text,
@@ -48,7 +51,7 @@ class Update(Object):
             disable_notification=disable_notification,
             chat_keypad=chat_keypad,
             inline_keypad=inline_keypad,
-            reply_to_message_id=reply_to_message_id or self.new_message.id if qoute else None,
+            reply_to_message_id=reply_to_message_id,
             chat_keypad_type=chat_keypad_type
         )
     
