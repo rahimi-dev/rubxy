@@ -168,3 +168,23 @@ class forwarded_filter(Filter):
         )
     
 forwarded = forwarded_filter()
+
+class chat(Filter):
+    def __init__(self, chat_id: Union[list[str, int], str]):
+        self.chat_id = chat_id
+
+        if isinstance(self.chat_id, str):
+            self.chat_id = [chat_id]
+
+        elif isinstance(self.chat_id, list): pass
+        else:
+            raise TypeError("`chat_id` must be type of list or str")
+    
+    async def __call__(self, _, update: Update):
+        return update.chat_id in self.chat_id
+
+class edited_filter(Filter):
+    async def __call__(self, _, update: Update):
+        return getattr(update.new_message, "is_edited", None) or getattr(update.new_message, "is_edited", None)
+    
+edited = edited_filter()
