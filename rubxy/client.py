@@ -44,7 +44,7 @@ class Client(Methods):
     def __init__(
         self,
         bot_token: str,
-        plugins: Optional[Plugins] = None,
+        plugins: Optional[dict] = None,
         timeout: Optional[float] = DEAFULT_TIMEOUT,
         rate_limit: Optional[float] = DEAFULT_RATE_LIMIT,
         poll_interval: Optional[float] = DEAFULT_POLL_INTERVAL,
@@ -59,7 +59,7 @@ class Client(Methods):
         self.is_long_polling: bool = None
         self.middlewares: List[Callable] = []
         self.dispatcher: Dispatcher = Dispatcher(self, poll_interval=poll_interval)
-        self.plugins: Plugins = plugins
+        self.plugins: dict = plugins
         self.timeout: int = timeout
         self.completed_updates = deque(maxlen=200)
         self.rate_limit: float = rate_limit
@@ -70,12 +70,10 @@ class Client(Methods):
         self.start_handlers: List[Callable] = []
         self.stop_handlers: List[Callable] = []
         
-        if not self.loop:
-            try:
-                self.loop = asyncio.get_running_loop()
-            except RuntimeError:
-                self.loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(self.loop)
+        if isinstance(loop, asyncio.AbstractEventLoop):
+            self.loop = loop
+        else:
+            self.loop = asyncio.get_event_loop()
         
     async def start(self):
         if not self.is_started:
