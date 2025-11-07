@@ -1,6 +1,5 @@
 import rubxy
 import asyncio
-import traceback
 import logging
 import inspect
 import time
@@ -248,7 +247,9 @@ class Dispatcher:
                 for group, _handlers in event_handlers.items():
                     for _handler in _handlers:
                         try:
-                            _check = await _handler.check(self.client, update)
+                            _check = self.client.loop.create_task(
+                                _handler.check(self.client, update)
+                            )
 
                             if _check:
                                 break
