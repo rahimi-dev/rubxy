@@ -1,3 +1,5 @@
+import asyncio
+
 from typing import Optional, List
 
 class Plugins:
@@ -16,6 +18,11 @@ class StopPropagation(StopAsyncIteration):
 
 class ContinuePropagation(StopAsyncIteration):
     pass
+
+try:
+    asyncio.get_running_loop()
+except RuntimeError:
+    asyncio.set_event_loop(asyncio.new_event_loop())
 
 
 from .client import Client

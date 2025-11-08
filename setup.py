@@ -7,7 +7,7 @@ setup(
     name="rubxy",
     author="Amirali Rahimi",
     author_email="amiralirahimi769@gmail.com",
-    version="0.1.3b",
+    version="0.1.5",
     description="A Python library for interacting with the Rubika bot API.",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -12,14 +12,15 @@ class EditMessageKeypad:
         inline_keypad: Optional["types.Keypad"] = None,
         chat_keypad_type: Optional["enums.ChatKeypadType"] = enums.ChatKeypadType.NONE
     ):
-        chat_keypad, inline_keypad = utils.keypad_parse(chat_keypad, inline_keypad, chat_keypad_type)
+        chat_keypad, inline_keypad, chat_keypad_type = utils.keypad_parse(chat_keypad, inline_keypad, chat_keypad_type)
 
         r = await self.invoke(
             "editMessageKeypad",
             chat_id=chat_id,
             message_id=message_id,
             chat_keypad=chat_keypad,
-            inline_keypad=inline_keypad
+            inline_keypad=inline_keypad,
+            chat_keypad_type=chat_keypad_type
         )
 
         return types.Message(

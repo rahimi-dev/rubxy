@@ -23,8 +23,7 @@ class Handler:
         update: Update
     ):
         if not self.filters:
-            await self._call_callback(client, update)
-            
+            await self._call_callback(client, update)           
             return True
 
         # All filters must be true
@@ -42,7 +41,6 @@ class Handler:
             return
         
         await self._call_callback(client, update)
-        
         return True
 
     async def _call_callback(
@@ -51,7 +49,9 @@ class Handler:
         update: Update
     ):
         if inspect.iscoroutinefunction(self.callback):
-            await self.callback(client, update)
+            client.loop.create_task(
+                self.callback(client, update)
+            )
         else:
             client.loop.run_in_executor(
                 client.executor,

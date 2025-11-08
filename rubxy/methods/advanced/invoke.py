@@ -1,6 +1,5 @@
 import rubxy
 
-from rubxy.types import Message
 from rubxy.errors import raise_exception
 from typing import Optional
 
@@ -10,7 +9,7 @@ class Invoke:
     async def invoke(
         self: "rubxy.Client",
         method: str,
-        **parameters
+        **parameters,
     ) -> dict:
         if not self.is_started:
             raise ConnectionError("Client has not been started yet")
@@ -18,9 +17,7 @@ class Invoke:
         await self._rate_limit()
         
         async with self.http.post(method, json=parameters, headers=HEADERS) as response:
-            if not response.ok:
-                raise
-
+            response.raise_for_status() # raise exception if not response.ok
             result = await response.json()
 
             if result.get("status") != "OK":

@@ -14,5 +14,5 @@ def keypad_parse(chat_keypad, inline_keypad, chat_keypad_type=None):
         else:
             raise TypeError("`chat_keypad` or `inline_keypad` must be of type types.Keypad")
     
-        return chat_keypad, inline_keypad
-    return None, None
+        return chat_keypad, inline_keypad, chat_keypad_type
+    return chat_keypad, inline_keypad, chat_keypad_type

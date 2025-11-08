@@ -1,3 +1,3 @@
-import pyrogram
+import filetype
 
-pyrogram.sync
+print(filetype.guess_mime("rubxy/tests/download.jpg").split())

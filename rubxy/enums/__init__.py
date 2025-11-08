@@ -16,3 +16,4 @@ from .sender_type import SenderType
 from .update_type import UpdateType
 from .update_endpoint_type import UpdateEndpointType
 from .event_type import EventType
+from .file_type import FileType

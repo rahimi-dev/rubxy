@@ -190,6 +190,7 @@ class Client(Methods):
                     runner(self.stop())
                     raise e
                 finally:
+                    runner(self.dispatcher.app.shutdown())
                     runner(self.dispatcher.app.cleanup())
             else:
                 raise ValueError("Endpoint format is incorrect, it should be starts with http")

@@ -13,10 +13,10 @@ class SendContact:
         disable_notification: Optional[bool] = False,
         chat_keypad: Optional["types.Keypad"] = None,
         inline_keypad: Optional["types.Keypad"] = None,
-        reply_to_message_id: Optional[str] = None,
+        reply_to_message_id: Optional[int] = None,
         chat_keypad_type: Optional["enums.ChatKeypadType"] = enums.ChatKeypadType.NONE
     ) -> "types.Message":
-        chat_keypad, inline_keypad = utils.keypad_parse(chat_keypad, inline_keypad, chat_keypad_type)
+        chat_keypad, inline_keypad, chat_keypad_type = utils.keypad_parse(chat_keypad, inline_keypad, chat_keypad_type)
         
         r = await self.invoke(
             "sendContact",

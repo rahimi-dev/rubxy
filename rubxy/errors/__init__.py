@@ -2,7 +2,8 @@ from .exceptions import (
     ApiError,
     InvalidAccess,
     InvalidInput,
-    InvalidMethod
+    InvalidMethod,
+    TooRequests
 )
 
 def raise_exception(
@@ -13,6 +14,7 @@ def raise_exception(
         "INVALID_ACCESS": InvalidAccess,
         "INVALID_INPUT": InvalidInput,
         "INVALID_METHOD": InvalidMethod,
+        "TOO_REQUESTS": TooRequests,
         "_": ApiError
     }
 

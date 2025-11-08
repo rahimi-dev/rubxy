@@ -109,13 +109,11 @@ class regex(Filter):
         self.p = re.compile(pattern, flags)
 
     def __call__(self, _, update: Union[Update, InlineMessage]):
-        string: str = None
-
-        if isinstance(update, Update):
-            string = update.new_message.text or update.updated_message.text
-        
-        elif isinstance(update, InlineMessage):
-            string = update.aux_data.button_id or update.text
+        string = (
+            getattr(update.new_message, "text", None) or getattr(update.updated_message, "text", None)
+        ) or (
+            getattr(update.aux_data, "button_id", None) or update.text
+        )
         
         if not string:
             return False

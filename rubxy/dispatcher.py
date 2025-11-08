@@ -242,14 +242,12 @@ class Dispatcher:
                         self.client, update, lambda: self.client.loop.create_task(run_middlewares(index + 1))
                     )
             else:
-                event_handlers = self.groups.get(event_type) or {}
+                event_handlers: Dict[int, List[handlers.Handler]] = self.groups.get(event_type) or {}
 
                 for group, _handlers in event_handlers.items():
                     for _handler in _handlers:
                         try:
-                            _check = self.client.loop.create_task(
-                                _handler.check(self.client, update)
-                            )
+                            _check = await _handler.check(self.client, update)
 
                             if _check:
                                 break

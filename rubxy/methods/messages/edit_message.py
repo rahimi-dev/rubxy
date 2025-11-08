@@ -28,8 +28,5 @@ class EditMessage:
                     inline_keypad=inline_keypad,
                     chat_keypad_type=chat_keypad_type
                 )
-            
-            if chat_keypad:
-                await self.edit
         
         return r

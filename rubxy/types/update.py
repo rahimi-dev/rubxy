@@ -29,7 +29,7 @@ class Update(Object):
         self.matches = matches
 
     async def reply(
-        self: Union["types.Message", "types.InlineMessage"],
+        self: Union["types.Update", "types.Message", "types.InlineMessage"],
         text: str,
         qoute: Optional[bool] = None,
         chat_id: Optional[str] = None,
@@ -56,7 +56,7 @@ class Update(Object):
         )
     
     async def delete(
-        self,
+        self: Union["types.Update", "types.Message", "types.InlineMessage"],
         chat_id: Optional[Union[str, int]] = None,
         message_id: Optional[Union[str, int]] = None
     ):
