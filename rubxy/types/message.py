@@ -23,6 +23,7 @@ class Message(Update, Object):
         reply_to_message_id: Optional[str] = None,
         forwarded_from: Optional["types.ForwardedFrom"] = None,
         matches: Optional[List[Match]] = None,
+        metadata: Optional["types.MetaData"] = None
     ):
         super().__init__(client=client)
         
@@ -38,3 +39,4 @@ class Message(Update, Object):
         self.reply_to_message_id = reply_to_message_id
         self.forwarded_from = forwarded_from
         self.matches = matches
+        self.metadata = metadata

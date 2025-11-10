@@ -16,7 +16,7 @@ class Update(Object):
         new_message: Optional["types.Message"] = None,
         updated_message: Optional["types.Message"] = None,
         updated_payment: Optional["types.PaymentStatus"] = None,
-        matches: Optional[list[Match]] = None
+        matches: Optional[list[Match]] = None,
     ):
         super().__init__(client=client)
         
@@ -31,6 +31,7 @@ class Update(Object):
     async def reply(
         self: Union["types.Update", "types.Message", "types.InlineMessage"],
         text: str,
+        metadata: Optional["types.MetaData"] = None,
         qoute: Optional[bool] = None,
         chat_id: Optional[str] = None,
         disable_notification: Optional[bool] = False,
@@ -47,6 +48,7 @@ class Update(Object):
 
         return await self._client.send_message(
             text=text,
+            metadata=metadata,
             chat_id=chat_id or self.chat_id,
             disable_notification=disable_notification,
             chat_keypad=chat_keypad,

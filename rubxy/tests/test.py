@@ -5,7 +5,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 client = Client(bot_token="DBDHE0WYUPOBBNWEENWGZUHPEXXIPDFJIWNMQKNYUCVXHFVOIODELKQZFCHLOBTQ")
-    
+
 @client.on_start()
 async def s(_):
     print(await client.get_me())
@@ -14,12 +14,9 @@ async def s(_):
 def t(client):
     print('stop handler')
 
-@client.on_message(filters.commands("start") | filters.commands("stop"))
+@client.on_message()
 async def m(_, update: Update):
-    r = await client.send_file(update.chat_id, file="rubxy/tests/download.jpg")
+    print(update.new_message.metadata.meta_data_parts)
 
-@client.on_inline_message(filters.regex("^s$") | filters.regex("^test$"))
-async def m2(_, update):
-    print(update)
 
 client.run()

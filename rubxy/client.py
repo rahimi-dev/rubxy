@@ -9,14 +9,17 @@ import sys
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from concurrent.futures import ThreadPoolExecutor
 from collections import deque
+
+from rubxy import enums
 from rubxy.methods import Methods
 from rubxy.handlers import Handler
 from rubxy.dispatcher import Dispatcher
+from rubxy.parser import Markdown
+
 from typing import Any, Union, Literal, Dict, List, Callable, Optional
 from importlib import import_module
 from pathlib import Path
 
-from . import Plugins
 from ._config import (
     DEAFULT_HOST,
     DEAFULT_PORT,
@@ -48,6 +51,7 @@ class Client(Methods):
         timeout: Optional[float] = DEAFULT_TIMEOUT,
         rate_limit: Optional[float] = DEAFULT_RATE_LIMIT,
         poll_interval: Optional[float] = DEAFULT_POLL_INTERVAL,
+        parse_mode: Optional[Union[str, enums.ParseMode]] = None,
         executor: Optional[ThreadPoolExecutor] = None,
         loop: Optional[asyncio.BaseEventLoop] = None
     ):
@@ -55,12 +59,14 @@ class Client(Methods):
         self.base_url: str = "https://botapi.rubika.ir/v3/{}/".format(bot_token)
         self.http: ClientSession = None
         self.connector: TCPConnector = None
+        self._formatter = Markdown(self)
         self.is_started: bool = False
         self.is_long_polling: bool = None
         self.middlewares: List[Callable] = []
         self.dispatcher: Dispatcher = Dispatcher(self, poll_interval=poll_interval)
         self.plugins: dict = plugins
         self.timeout: int = timeout
+        self.parse_mode = parse_mode
         self.completed_updates = deque(maxlen=200)
         self.rate_limit: float = rate_limit
         self.last_request = 0
@@ -74,6 +80,19 @@ class Client(Methods):
             self.loop = loop
         else:
             self.loop = asyncio.get_event_loop()
+
+        # parse_mode normalizer
+
+        if self.parse_mode is None:
+            self.parse_mode = enums.ParseMode.MARKDOWN
+
+        elif isinstance(self.parse_mode, str):
+            if self.parse_mode.lower() in ("mk", "markdown"):
+                self.parse_mode = enums.ParseMode.MARKDOWN
+            elif self.parse_mode.lower() in ("html"):
+                self.parse_mode = enums.ParseMode.HTML
+            else:
+                raise ValueError("parse_mode must be type of enums.ParseMode or in [html, mk, markdown]")
         
     async def start(self):
         if not self.is_started:

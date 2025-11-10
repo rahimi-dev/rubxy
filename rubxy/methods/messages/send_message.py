@@ -1,14 +1,14 @@
 import rubxy
-import asyncio
 
 from rubxy import types, enums, utils
-from typing import Optional, Union
+from typing import Optional, Union, Dict
 
 class SendMessage:
     async def send_message(
         self: "rubxy.Client",
         chat_id: Union[str, int],
         text: str,
+        metadata: Optional[Union[Dict, "types.MetaData"]] = None,
         disable_notification: Optional[bool] = False,
         chat_keypad: Optional["types.Keypad"] = None,
         inline_keypad: Optional["types.Keypad"] = None,
@@ -16,10 +16,20 @@ class SendMessage:
         chat_keypad_type: Optional["enums.ChatKeypadType"] = enums.ChatKeypadType.NONE
     ) -> "types.Message":
         chat_keypad, inline_keypad, chat_keypad_type = utils.keypad_parse(chat_keypad, inline_keypad, chat_keypad_type)
-            
+
+        if (
+            text and
+            metadata is None
+        ):
+            text, metadata = self._formatter._format_text(text)
+        
+        elif isinstance(metadata, types.MetaData):
+            metadata = metadata.__dict__
+        
         r = await self.invoke(
             "sendMessage",
-            text=text,   
+            text=text,
+            metadata=metadata,
             chat_id=chat_id,
             disable_notification=disable_notification,
             chat_keypad=chat_keypad,

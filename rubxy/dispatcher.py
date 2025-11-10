@@ -122,7 +122,6 @@ class Dispatcher:
                 aux_data = new_message.get("aux_data") or {}
                 file = new_message.get("file") or {}
                 forwarded_from = new_message.get("forwarded_from") or {}
-
                 updated_message = raw_update.get("updated_message") or {}
                 updated_payment = raw_update.get("updated_payment") or {}
                 updated_message_aux_data = updated_message.get("aux_data") or {}
@@ -159,6 +158,7 @@ class Dispatcher:
                             from_sender_id=forwarded_from.get("from_sender_id"),
                             client=self.client
                         ) if forwarded_from else None,
+                        metadata=new_message.get("metadata"),
                         client=self.client
                     ) if new_message else None,
                     updated_message=types.Message(
@@ -187,6 +187,7 @@ class Dispatcher:
                             from_sender_id=updated_message_forwarded_from.get("from_sender_id"),
                             client=self.client
                         ) if updated_message_forwarded_from else None,
+                        metadata=updated_message.get("metadata"),
                     ) if updated_message else None,
                     updated_payment=types.PaymentStatus(
                         payment_id=updated_payment.get("payment_id"),

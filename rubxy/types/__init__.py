@@ -22,4 +22,6 @@ from .join_channel_data import JoinChannelData
 from .button import Button
 from .location import Location
 from .poll_status import PollStatus
+from .metadata import MetaData
+from .meta_data_parts import MetaDataParts
 from .object import Object
