@@ -51,12 +51,13 @@ class Client(Methods):
         timeout: Optional[float] = DEAFULT_TIMEOUT,
         rate_limit: Optional[float] = DEAFULT_RATE_LIMIT,
         poll_interval: Optional[float] = DEAFULT_POLL_INTERVAL,
+        base_url: Optional[str] = None,
         parse_mode: Optional[Union[str, enums.ParseMode]] = None,
         executor: Optional[ThreadPoolExecutor] = None,
         loop: Optional[asyncio.BaseEventLoop] = None
     ):
         self.bot_token: str = bot_token
-        self.base_url: str = "https://botapi.rubika.ir/v3/{}/".format(bot_token)
+        self.base_url: str = (base_url or "https://botapi.rubika.ir/v3/{}/").format(bot_token)
         self.http: ClientSession = None
         self.connector: TCPConnector = None
         self._formatter = Markdown(self)
