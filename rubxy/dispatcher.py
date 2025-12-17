@@ -264,7 +264,7 @@ class Dispatcher:
         async def handle(request: Request):
             data = await request.json()
             
-            await self.process_update(data, event_type=event_type)
+            asyncio.create_task(self.process_update(data, event_type=event_type))
 
             return web.json_response(
                 {"status": "OK"},
@@ -291,8 +291,6 @@ class Dispatcher:
         return await handler(request)
     
     async def setup_webhook(self, host: str, path: str, port: int, endpoint: str, update_endpoints: bool):
-        # Adapted from rubpy - https://github.com/shayanheidari01/rubika
-        
         _path = path.rstrip('/')
         pather = lambda a=None, b=_path: f"{b}/{a}" if a else ""
         decapitalize = lambda s: s[:1].lower() + s[1:] if s else s
