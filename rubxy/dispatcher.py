@@ -8,7 +8,7 @@ from rubxy import types, enums, handlers, errors
 from collections import OrderedDict
 from typing import Callable, Dict, List, Union
 from asyncio import sleep
-from aiohttp import web
+from aiohttp import web, ClientResponseError
 from aiohttp.web import Application, Request
 
 logger = logging.getLogger(__name__)
@@ -103,7 +103,11 @@ class Dispatcher:
                                 enums.EventType.INLINE_MESSAGE if 'inline_message' in raw_update else enums.EventType.MESSAGE
                             )
                         )
-
+                
+                except ClientResponseError:
+                    if self.client.is_long_polling:
+                        pass
+                    
                 except Exception:
                     logger.exception('an error occurred while polling update')
         except KeyboardInterrupt:
