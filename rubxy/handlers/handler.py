@@ -49,9 +49,7 @@ class Handler:
         update: Update
     ):
         if inspect.iscoroutinefunction(self.callback):
-            client.loop.create_task(
-                self.callback(client, update)
-            )
+            await self.callback(client, update)
         else:
             client.loop.run_in_executor(
                 client.executor,
