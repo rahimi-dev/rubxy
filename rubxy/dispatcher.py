@@ -91,18 +91,18 @@ class Dispatcher:
                         self.is_first_update = False
                         continue
                     
-                    for raw_update in updates:
-                        last_time = raw_update.get('new_message', {}).get('time') or raw_update.get('updated_message', {}).get('time')
-                        
-                        if self.has_time_passed(last_time, 10):
-                            break
+                    tasks: list = []
 
-                        asyncio.create_task(
+                    for raw_update in updates:
+                        tasks.append(
                             self.process_update(
                                 raw_update,
                                 enums.EventType.INLINE_MESSAGE if 'inline_message' in raw_update else enums.EventType.MESSAGE
                             )
                         )
+                    
+                    if tasks:
+                        await asyncio.gather(*tasks)
                 
                 except ClientResponseError:
                     if self.client.is_long_polling:
@@ -113,125 +113,119 @@ class Dispatcher:
         except KeyboardInterrupt:
             await self.client.stop()
 
-    async def process_update(self, updates: Union[Dict, List[Dict]], event_type: enums.EventType):
-        if isinstance(updates, dict):
-            updates = [updates]
-                
-        for raw_update in updates:
-            update = None
+    async def process_update(self, raw_update: Union[Dict], event_type: enums.EventType):
+        if not isinstance(raw_update, dict):
+            raise TypeError("Updates type must be dict, not %s"%type(update).__name__)
 
-            if event_type is enums.EventType.MESSAGE:
-                raw_update = raw_update.get("update", raw_update) or {}
-                new_message = raw_update.get("new_message") or {}
-                aux_data = new_message.get("aux_data") or {}
-                file = new_message.get("file") or {}
-                forwarded_from = new_message.get("forwarded_from") or {}
-                updated_message = raw_update.get("updated_message") or {}
-                updated_payment = raw_update.get("updated_payment") or {}
-                updated_message_aux_data = updated_message.get("aux_data") or {}
-                updated_message_file = updated_message.get("file") or {}
-                updated_message_forwarded_from = updated_message.get("forwarded_from") or {}
-
-                update = types.Update(
-                    type=raw_update.get("type"),
-                    chat_id=raw_update.get("chat_id"),
-                    removed_message_id=raw_update.get("removed_message_id"),
-                    new_message=types.Message(
-                        id=new_message.get("message_id"),
-                        text=new_message.get("text"),
-                        time=new_message.get("time"),
-                        is_edited=new_message.get("is_edited"),
-                        sender_type=new_message.get("sender_type"),
-                        sender_id=new_message.get("sender_id"),
-                        aux_data=types.AuxData(
-                            start_id=aux_data.get("start_id"),
-                            button_id=aux_data.get("button_id"),
-                            client=self.client
-                        ) if aux_data else None,
-                        file=types.File(
-                            file_id=file.get("file_id"),
-                            file_name=file.get("file_name"),
-                            size=file.get("size"),
-                            client=self.client
-                        ) if file else None,
-                        reply_to_message_id=new_message.get("reply_to_message_id"),
-                        forwarded_from=types.ForwardedFrom(
-                            type_from=forwarded_from.get("type_from"),
-                            id=forwarded_from.get("message_id"),
-                            from_chat_id=forwarded_from.get("from_chat_id"),
-                            from_sender_id=forwarded_from.get("from_sender_id"),
-                            client=self.client
-                        ) if forwarded_from else None,
-                        metadata=new_message.get("metadata"),
+        if event_type is enums.EventType.MESSAGE:
+            raw_update = raw_update.get("update", raw_update) or {}
+            new_message = raw_update.get("new_message") or {}
+            aux_data = new_message.get("aux_data") or {}
+            file = new_message.get("file") or {}
+            forwarded_from = new_message.get("forwarded_from") or {}
+            updated_message = raw_update.get("updated_message") or {}
+            updated_payment = raw_update.get("updated_payment") or {}
+            updated_message_aux_data = updated_message.get("aux_data") or {}
+            updated_message_file = updated_message.get("file") or {}
+            updated_message_forwarded_from = updated_message.get("forwarded_from") or {}
+            update = types.Update(
+                type=raw_update.get("type"),
+                chat_id=raw_update.get("chat_id"),
+                removed_message_id=raw_update.get("removed_message_id"),
+                new_message=types.Message(
+                    id=new_message.get("message_id"),
+                    text=new_message.get("text"),
+                    time=new_message.get("time"),
+                    is_edited=new_message.get("is_edited"),
+                    sender_type=new_message.get("sender_type"),
+                    sender_id=new_message.get("sender_id"),
+                    aux_data=types.AuxData(
+                        start_id=aux_data.get("start_id"),
+                        button_id=aux_data.get("button_id"),
                         client=self.client
-                    ) if new_message else None,
-                    updated_message=types.Message(
-                        id=updated_message.get("message_id"),
-                        text=updated_message.get("text"),
-                        time=updated_message.get("time"),
-                        is_edited=updated_message.get("is_edited"),
-                        sender_type=updated_message.get("sender_type"),
-                        sender_id=updated_message.get("sender_id"),
-                        aux_data=types.AuxData(
-                            start_id=updated_message_aux_data.get("start_id"),
-                            button_id=updated_message_aux_data.get("button_id"),
-                            client=self.client
-                        ) if updated_message_aux_data else None,
-                        file=types.File(
-                            file_id=updated_message_file.get("file_id"),
-                            file_name=updated_message_file.get("file_name"),
-                            size=updated_message_file.get("size"),
-                            client=self.client
-                        ) if updated_message_file else None,
-                        reply_to_message_id=updated_message.get("reply_to_message_id"),
-                        forwarded_from=types.ForwardedFrom(
-                            type_from=updated_message_forwarded_from.get("type_from"),
-                            id=updated_message_forwarded_from.get("message_id"),
-                            from_chat_id=updated_message_forwarded_from.get("from_chat_id"),
-                            from_sender_id=updated_message_forwarded_from.get("from_sender_id"),
-                            client=self.client
-                        ) if updated_message_forwarded_from else None,
-                        metadata=updated_message.get("metadata"),
-                    ) if updated_message else None,
-                    updated_payment=types.PaymentStatus(
-                        payment_id=updated_payment.get("payment_id"),
-                        status=updated_payment.get("status"),
-                        client=self.client
-                    ) if updated_payment else None,
-                    client=self.client
-                )
-
-            elif event_type is enums.EventType.INLINE_MESSAGE:
-                raw_update = raw_update.get("inline_message") or {}
-                file = raw_update.get("file") or {}
-                location = raw_update.get("location") or {}
-                aux_data = raw_update.get("aux_data") or {}
-
-                update = types.InlineMessage(
-                    sender_id=raw_update.get("sender_id"),
-                    text=raw_update.get("text"),
+                    ) if aux_data else None,
                     file=types.File(
                         file_id=file.get("file_id"),
                         file_name=file.get("file_name"),
                         size=file.get("size"),
                         client=self.client
                     ) if file else None,
-                    location=types.Location(
-                        longitude=location.get("longitude"),
-                        latitude=location.get("latitude"),
+                    reply_to_message_id=new_message.get("reply_to_message_id"),
+                    forwarded_from=types.ForwardedFrom(
+                        type_from=forwarded_from.get("type_from"),
+                        id=forwarded_from.get("message_id"),
+                        from_chat_id=forwarded_from.get("from_chat_id"),
+                        from_sender_id=forwarded_from.get("from_sender_id"),
                         client=self.client
-                    ) if location else None,
-                    aux_data=types.AuxData(
-                        start_id=aux_data.get("start_id"),
-                        button_id=aux_data.get("button_id"),
-                        client=self.client
-                    ) if aux_data else None,
-                    message_id=raw_update.get("message_id"),
-                    chat_id=raw_update.get("chat_id"),
+                    ) if forwarded_from else None,
+                    metadata=new_message.get("metadata"),
                     client=self.client
-                )
-            
-            await self.dispatch_update(update=update, event_type=event_type)
+                ) if new_message else None,
+                updated_message=types.Message(
+                    id=updated_message.get("message_id"),
+                    text=updated_message.get("text"),
+                    time=updated_message.get("time"),
+                    is_edited=updated_message.get("is_edited"),
+                    sender_type=updated_message.get("sender_type"),
+                    sender_id=updated_message.get("sender_id"),
+                    aux_data=types.AuxData(
+                        start_id=updated_message_aux_data.get("start_id"),
+                        button_id=updated_message_aux_data.get("button_id"),
+                        client=self.client
+                    ) if updated_message_aux_data else None,
+                    file=types.File(
+                        file_id=updated_message_file.get("file_id"),
+                        file_name=updated_message_file.get("file_name"),
+                        size=updated_message_file.get("size"),
+                        client=self.client
+                    ) if updated_message_file else None,
+                    reply_to_message_id=updated_message.get("reply_to_message_id"),
+                    forwarded_from=types.ForwardedFrom(
+                        type_from=updated_message_forwarded_from.get("type_from"),
+                        id=updated_message_forwarded_from.get("message_id"),
+                        from_chat_id=updated_message_forwarded_from.get("from_chat_id"),
+                        from_sender_id=updated_message_forwarded_from.get("from_sender_id"),
+                        client=self.client
+                    ) if updated_message_forwarded_from else None,
+                    metadata=updated_message.get("metadata"),
+                ) if updated_message else None,
+                updated_payment=types.PaymentStatus(
+                    payment_id=updated_payment.get("payment_id"),
+                    status=updated_payment.get("status"),
+                    client=self.client
+                ) if updated_payment else None,
+                client=self.client
+            )
+        elif event_type is enums.EventType.INLINE_MESSAGE:
+            raw_update = raw_update.get("inline_message") or {}
+            file = raw_update.get("file") or {}
+            location = raw_update.get("location") or {}
+            aux_data = raw_update.get("aux_data") or {}
+            update = types.InlineMessage(
+                sender_id=raw_update.get("sender_id"),
+                text=raw_update.get("text"),
+                file=types.File(
+                    file_id=file.get("file_id"),
+                    file_name=file.get("file_name"),
+                    size=file.get("size"),
+                    client=self.client
+                ) if file else None,
+                location=types.Location(
+                    longitude=location.get("longitude"),
+                    latitude=location.get("latitude"),
+                    client=self.client
+                ) if location else None,
+                aux_data=types.AuxData(
+                    start_id=aux_data.get("start_id"),
+                    button_id=aux_data.get("button_id"),
+                    client=self.client
+                ) if aux_data else None,
+                message_id=raw_update.get("message_id"),
+                chat_id=raw_update.get("chat_id"),
+                client=self.client
+            )
+        
+        await self.dispatch_update(update=update, event_type=event_type)
 
     async def dispatch_update(self, update, event_type):
         async def run_middlewares(index: int):
@@ -266,9 +260,9 @@ class Dispatcher:
     
     def handle_webhook(self, event_type: enums.EventType):
         async def handle(request: Request):
-            data = await request.json()
+            raw_update = await request.json()
             
-            asyncio.create_task(self.process_update(data, event_type=event_type))
+            asyncio.create_task(self.process_update(raw_update=raw_update, event_type=event_type))
 
             return web.json_response(
                 {"status": "OK"},
