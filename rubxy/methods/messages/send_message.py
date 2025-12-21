@@ -22,7 +22,7 @@ class SendMessage:
             metadata is None
         ):
             _parse = self._formatter.to_metadata(text)
-            text, metadata = _parse["text"], _parse["metadata"]
+            text, metadata = _parse.get("text"), _parse.get("metadata")
         
         elif isinstance(metadata, types.MetaData):
             metadata = metadata.__dict__
