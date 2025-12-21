@@ -16,7 +16,8 @@ def t(client):
 
 @client.on_message()
 async def m(_, update: Update):
-    print(update.new_message.metadata.meta_data_parts)
+    kos = await client.get_chat(update.chat_id)
+    await update.reply(f"**Salam** [{kos.first_name}]({update.new_message.sender_id})")
 
 
 client.run()

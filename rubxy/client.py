@@ -60,14 +60,14 @@ class Client(Methods):
         self.base_url: str = (base_url or "https://botapi.rubika.ir/v3/{}/").format(bot_token)
         self.http: ClientSession = None
         self.connector: TCPConnector = None
-        self._formatter = Markdown(self)
         self.is_started: bool = False
         self.is_long_polling: bool = None
         self.middlewares: List[Callable] = []
-        self.dispatcher: Dispatcher = Dispatcher(self, poll_interval=poll_interval)
+        self.dispatcher = Dispatcher(self, poll_interval=poll_interval)
         self.plugins: dict = plugins
         self.timeout: int = timeout
         self.parse_mode = parse_mode
+        self._formatter = Markdown(self)
         self.completed_updates = deque(maxlen=200)
         self.rate_limit: float = rate_limit
         self.last_request = 0
