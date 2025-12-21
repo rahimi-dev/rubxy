@@ -14,10 +14,10 @@ async def s(_):
 def t(client):
     print('stop handler')
 
-@client.on_message()
+@client.on_message(filters.commands("kos"))
 async def m(_, update: Update):
+    print(update.new_message.sender_id)
     kos = await client.get_chat(update.chat_id)
     await update.reply(f"**Salam** [{kos.first_name}]({update.new_message.sender_id})")
-
 
 client.run()

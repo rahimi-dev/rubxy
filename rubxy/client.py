@@ -67,7 +67,6 @@ class Client(Methods):
         self.plugins: dict = plugins
         self.timeout: int = timeout
         self.parse_mode = parse_mode
-        self._formatter = Markdown(self)
         self.completed_updates = deque(maxlen=200)
         self.rate_limit: float = rate_limit
         self.last_request = 0
@@ -94,6 +93,8 @@ class Client(Methods):
                 self.parse_mode = enums.ParseMode.HTML
             else:
                 raise ValueError("parse_mode must be type of enums.ParseMode or in [html, mk, markdown]")
+        
+        self.markdown = Markdown(self.parse_mode)
         
     async def start(self):
         if not self.is_started:

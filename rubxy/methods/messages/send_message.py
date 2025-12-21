@@ -21,8 +21,8 @@ class SendMessage:
             text and
             metadata is None
         ):
-            _parse = self._formatter.to_metadata(text)
-            text, metadata = _parse.get("text"), _parse.get("metadata")
+            parse = self.markdown.parser(text)
+            text, metadata = parse.get("text"), parse.get("metadata")
         
         elif isinstance(metadata, types.MetaData):
             metadata = metadata.__dict__
