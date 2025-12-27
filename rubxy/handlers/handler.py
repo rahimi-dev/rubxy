@@ -1,6 +1,5 @@
 import rubxy
 import inspect
-import traceback
 
 from rubxy.types import Update
 from rubxy.filters import Filter
