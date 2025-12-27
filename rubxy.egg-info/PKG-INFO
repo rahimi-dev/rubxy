@@ -1,0 +1,144 @@
+Metadata-Version: 2.4
+Name: rubxy
+Version: 1.0.7
+Summary: A Python library for interacting with the Rubika bot API.
+Author: Amirali Rahimi
+Author-email: amiralirahimi769@gmail.com
+License: GPL-3.0-or-later
+Keywords: rubika,rubxy,bot,robot
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: aiohttp
+Requires-Dist: filetype
+Requires-Dist: markdownify
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# rubxy
+
+> **rubxy** is a Python library for interacting with the **Rubika** bot API.  
+> It makes it easy to send and receive messages, handle events, and build bots quickly.
+
+---
+
+## Features
+
+- Send and receive messages via Rubika API
+- Easy-to-use event handlers
+- Fully asynchronous & Support sync
+
+---
+
+## Installation
+
+```bash
+pip install rubxy
+```
+
+---
+
+## Async Usage
+
+
+- Messages Updates
+    ```python
+    from rubxy import Client, filters
+    from rubxy.types import Update
+
+    client = Client(bot_token="BOT_TOKEN")
+
+    @client.on_message(filters.commands("start"))
+    async def start_handler(client: Client, update: Update):
+        await update.reply("Hello from rubxy")
+
+    # Run in long-polling mode
+    client.run()
+
+    # Or run in webhook mode (recommended)
+    client.run(endpoint="https://example.com")
+    ```
+
+- Inline Updates
+
+    ```python
+    from rubxy import Client, filters
+    from rubxy.types import InlineMessage
+
+    client = Client(bot_token="BOT_TOKEN")
+
+    @client.on_inline_message(filters.regex("^button-(\w+)"))
+    async def inline_message_handler(client: Client, i: InlineMessage):
+        await i.answer(
+            text="you clicked button-id: {}".format(
+                i.matches[0].group(1)
+            )
+        )
+
+    # Run in long-polling mode
+    client.run()
+
+    # Or run in webhook mode (recommended)
+    client.run(endpoint="https://example.com")
+    ```
+
+## Sync Usage
+
+
+- Messages Updates
+    ```python
+    from rubxy import Client, filters
+    from rubxy.types import Update
+
+    client = Client(bot_token="BOT_TOKEN")
+
+    @client.on_message(filters.commands("start"))
+    def start_handler(client: Client, update: Update):
+        update.reply("Hello from rubxy")
+
+    # Run in long-polling mode
+    client.run()
+
+    # Or run in webhook mode (recommended)
+    client.run(endpoint="https://example.com")
+    ```
+
+- Inline Updates
+
+    ```python
+    from rubxy import Client, filters
+    from rubxy.types import InlineMessage
+
+    client = Client(bot_token="BOT_TOKEN")
+
+    @client.on_inline_message(filters.regex("^button-(\w+)"))
+    def inline_message_handler(client: Client, i: InlineMessage):
+        i.answer(
+            text="you clicked button-id: {}".format(
+                i.matches[0].group(1)
+            )
+        )
+
+    # Run in long-polling mode
+    client.run()
+
+    # Or run in webhook mode (recommended)
+    client.run(endpoint="https://example.com")
+    ```
