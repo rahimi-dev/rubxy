@@ -1,6 +1,6 @@
 import rubxy
 
-from rubxy import types, utils
+from rubxy import types
 from typing import Union, Optional
 
 class EditMessageText:

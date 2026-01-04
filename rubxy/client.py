@@ -89,7 +89,7 @@ class Client(Methods):
         elif isinstance(self.parse_mode, str):
             if self.parse_mode.lower() in ("mk", "markdown"):
                 self.parse_mode = enums.ParseMode.MARKDOWN
-            elif self.parse_mode.lower() in ("html"):
+            elif self.parse_mode.lower() in ("html",):
                 self.parse_mode = enums.ParseMode.HTML
             else:
                 raise ValueError("parse_mode must be type of enums.ParseMode or in [html, mk, markdown]")

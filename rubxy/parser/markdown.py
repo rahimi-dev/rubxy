@@ -1,6 +1,7 @@
-# # This module is based on the rubpy library.
-# # Used and modified with permission from the original author.
-# # Original source: https://github.com/shayanheidari01/rubika
+# This module is based on the rubpy library.
+# Used and modified with permission from the original author.
+# Original source: https://github.com/shayanheidari01/rubika
+
 import re
 import markdownify
 

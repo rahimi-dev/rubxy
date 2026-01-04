@@ -246,13 +246,12 @@ class Dispatcher:
                 for group, _handlers in event_handlers.items():
                     for _handler in _handlers:
                         try:
-                            _check = await _handler.check(self.client, update)
+                            ok = await _handler.check(self.client, update)
 
-                            if _check:
+                            if ok:
                                 break
-                            
                         except rubxy.StopPropagation:
-                            break
+                            return
                         except rubxy.ContinuePropagation:
                             continue
         

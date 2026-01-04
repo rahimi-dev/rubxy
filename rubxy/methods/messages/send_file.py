@@ -1,6 +1,6 @@
 import rubxy
 
-from rubxy import types, enums, utils
+from rubxy import types, enums
 from filetype import guess_mime
 
 from typing import Union, Optional
@@ -20,7 +20,19 @@ class SendFile:
         inline_keypad: Optional["types.Keypad"] = None,
         chat_keypad_type: Optional["enums.ChatKeypadType"] = enums.ChatKeypadType.NONE
     ):
-        chat_keypad, inline_keypad, chat_keypad_type = utils.keypad_parse(chat_keypad, inline_keypad, chat_keypad_type)
+        if any(
+            (
+                chat_keypad,
+                inline_keypad
+            )
+        ):
+            if isinstance(chat_keypad, types.Keypad):
+                chat_keypad = chat_keypad._to_dict()
+                chat_keypad_type = enums.ChatKeypadType.NEW
+            elif isinstance(inline_keypad, types.Keypad):
+                inline_keypad = inline_keypad._to_dict()
+            else:
+                raise TypeError("`chat_keypad` or `inline_keypad` must be of type `types.Keypad`")
         
         if not file_id:
             if isinstance(file, str):
@@ -35,7 +47,7 @@ class SendFile:
                 file_type = guess.split('/')[0].capitalize()
 
                 if file_type not in list(enums.FileType):
-                    raise TypeError(f"filetype not allowed, allowed types: {list(enums.FileType)}")
+                    raise TypeError(f"filetype is not allowed, allowed types: {list(enums.FileType)}")
 
             upload_url = await self.request_send_file(file_type)
             file_id = await self.upload_file(upload_url, file, file_name)

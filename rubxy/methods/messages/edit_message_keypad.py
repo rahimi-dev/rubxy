@@ -1,6 +1,6 @@
 import rubxy
 
-from rubxy import types, enums, utils
+from rubxy import types, enums
 from typing import Optional, Union
 
 class EditMessageKeypad:
@@ -12,7 +12,19 @@ class EditMessageKeypad:
         inline_keypad: Optional["types.Keypad"] = None,
         chat_keypad_type: Optional["enums.ChatKeypadType"] = enums.ChatKeypadType.NONE
     ):
-        chat_keypad, inline_keypad, chat_keypad_type = utils.keypad_parse(chat_keypad, inline_keypad, chat_keypad_type)
+        if any(
+            (
+                chat_keypad,
+                inline_keypad
+            )
+        ):
+            if isinstance(chat_keypad, types.Keypad):
+                chat_keypad = chat_keypad._to_dict()
+                chat_keypad_type = enums.ChatKeypadType.NEW
+            elif isinstance(inline_keypad, types.Keypad):
+                inline_keypad = inline_keypad._to_dict()
+            else:
+                raise TypeError("`chat_keypad` or `inline_keypad` must be of type `types.Keypad`")
 
         r = await self.invoke(
             "editMessageKeypad",

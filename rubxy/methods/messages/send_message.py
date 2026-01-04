@@ -1,6 +1,6 @@
 import rubxy
 
-from rubxy import types, enums, utils
+from rubxy import types, enums
 from typing import Optional, Union, Dict
 
 class SendMessage:
@@ -15,17 +15,24 @@ class SendMessage:
         reply_to_message_id: Optional[int] = None,
         chat_keypad_type: Optional["enums.ChatKeypadType"] = enums.ChatKeypadType.NONE
     ) -> "types.Message":
-        chat_keypad, inline_keypad, chat_keypad_type = utils.keypad_parse(chat_keypad, inline_keypad, chat_keypad_type)
-
-        if (
-            text and
-            metadata is None
+        if any(
+            (
+                chat_keypad,
+                inline_keypad
+            )
         ):
-            parse = self.markdown.parser(text)
-            text, metadata = parse.get("text"), parse.get("metadata")
-        
-        elif isinstance(metadata, types.MetaData):
+            if isinstance(chat_keypad, types.Keypad):
+                chat_keypad = chat_keypad._to_dict()
+                chat_keypad_type = enums.ChatKeypadType.NEW
+            elif isinstance(inline_keypad, types.Keypad):
+                inline_keypad = inline_keypad._to_dict()
+            else:
+                raise TypeError("`chat_keypad` or `inline_keypad` must be of type `types.Keypad`")
+
+        if isinstance(metadata, types.MetaData):
             metadata = metadata.__dict__
+        else:
+            text, metadata = self.markdown.parser(text).values()
         
         r = await self.invoke(
             "sendMessage",
