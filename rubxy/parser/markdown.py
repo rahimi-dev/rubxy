@@ -127,9 +127,9 @@ class Markdown:
                 removed_chars += char_removed
                 break
 
-        return {
-            "text": visible_text.strip(),
-            "metadata": {
-                "meta_data_parts": entities
-            } if entities else None
-        }
+        result = {"text": visible_text.strip()}
+
+        if entities:
+            result["metadata"] = {"meta_data_parts": entities}
+            
+        return result
